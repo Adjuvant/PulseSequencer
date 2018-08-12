@@ -12,13 +12,13 @@ To get started, check out the example scenes.
 
 ## Todo
 
-[ ] Add [Native Volume Envelopes](https://github.com/derelictcomputer/UnityVolumeEnvelopeNative)
-[ ] Transition to Entitas
-[ ] Add spatial positioning - set all voices in one action?
-[ ] Add per step time offset
-[ ] Add per step pitch variation
-[ ] Add per step gain setting
-[ ] Create a automated creation routine to instantiate from Prefab or Command.
+- [ ] Add [Native Volume Envelopes](https://github.com/derelictcomputer/UnityVolumeEnvelopeNative)
+- [ ] Transition to Entitas
+- [ ] Add spatial positioning - set all voices in one action?
+- [ ] Add per step time offset
+- [ ] Add per step pitch variation
+- [ ] Add per step gain setting
+- [ ] Create a automated creation routine to instantiate from Prefab or Command.
 
 ## Platform Support
 - Windows: verified working
