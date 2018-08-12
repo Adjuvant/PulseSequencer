@@ -1,10 +1,6 @@
 # PulseSequencer
 
-A pulse-based sequencer for Unity3d.
-
-## See it in action!
-
-[Derelict Computer](http://derelict.computer)
+A pulse-based sequencer for Unity3d adapted from [Derelict Computer](http://derelict.computer) original work.
 
 ## Info
 
@@ -13,6 +9,16 @@ The PulseSequencer allows composers to create 3d, polyrhythmic music using Unity
 Just clone or fork this repo and import it into your project.
 
 To get started, check out the example scenes.
+
+## Todo
+
+[ ] Add [Native Volume Envelopes](https://github.com/derelictcomputer/UnityVolumeEnvelopeNative)
+[ ] Transition to Entitas
+[ ] Add spatial positioning - set all voices in one action?
+[ ] Add per step time offset
+[ ] Add per step pitch variation
+[ ] Add per step gain setting
+[ ] Create a automated creation routine to instantiate from Prefab or Command.
 
 ## Platform Support
 - Windows: verified working

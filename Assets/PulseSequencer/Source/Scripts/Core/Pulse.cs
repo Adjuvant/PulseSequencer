@@ -6,6 +6,7 @@ namespace DerelictComputer
     /// <summary>
     /// The heartbeat of a Pulse Sequencer. 
     /// Triggers a pulse/tick/bang/whatever you call it at a specified interval.
+    /// Uses lookahead to trigger steps
     /// </summary>
     public class Pulse : MonoBehaviour
     {
@@ -13,9 +14,11 @@ namespace DerelictComputer
 
         public event Action<double> Triggered;
 
-        private const double PeriodMinimum = 0.016; // really don't want this to be any shorter than a frame at 60FPS
+        // really don't want this to be any shorter than a frame at 60FPS
+        private const double PeriodMinimum = 0.016; 
 
-        private const double BpmMinimum = 0.1; // so it doesn't go zero of negative, but really, do you ever want one beat every 10 minutes?
+        // so it doesn't go zero of negative, but really, do you ever want one beat every 10 minutes?
+        private const double BpmMinimum = 0.1; 
 
         /// <summary>
         /// Period in seconds

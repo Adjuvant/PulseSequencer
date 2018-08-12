@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace DerelictComputer
 {
+    /// <summary>
+    /// Volume envelope filter act in the OnAudioFilerRead
+    /// TODO: replace with native plugin instance
+    /// </summary>
     public class VolumeEnvelopeFilter : MonoBehaviour
     {
         public bool Enabled;

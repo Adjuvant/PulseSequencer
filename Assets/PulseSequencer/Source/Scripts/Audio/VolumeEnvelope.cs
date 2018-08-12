@@ -2,6 +2,9 @@
 
 namespace DerelictComputer
 {
+    /// <summary>
+    /// Volume envelope holds Sample settings for envelope filter to act on
+    /// </summary>
 	[Serializable]
 	public class VolumeEnvelope 
 	{

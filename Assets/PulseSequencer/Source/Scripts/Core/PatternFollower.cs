@@ -5,6 +5,7 @@ namespace DerelictComputer
 {
     /// <summary>
     /// A thing that does something when a pattern triggers steps
+    /// Basis for samplers and visual effects
     /// </summary>
     public abstract class PatternFollower : MonoBehaviour 
     {

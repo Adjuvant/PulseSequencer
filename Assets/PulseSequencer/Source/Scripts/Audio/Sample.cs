@@ -3,6 +3,9 @@ using System;
 
 namespace DerelictComputer
 {
+    /// <summary>
+    /// Sample holds references clips, pitch and envelope
+    /// </summary>
     [Serializable]
     public class Sample
     {

@@ -2,6 +2,10 @@
 
 namespace DerelictComputer
 {
+    /// <summary>
+    /// Pattern follower group collates all instances of PatternFollower classes
+    /// Allows setting of step active states
+    /// </summary>
     public class PatternFollowerGroup : MonoBehaviour
     {
         public bool Suspended;
