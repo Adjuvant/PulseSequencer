@@ -22,3 +22,7 @@ sysinfo.txt
 
 *.DS_STORE
 .vs
+Assets/DesperateDevs
+Assets/Entitas
+DesperateDevs.meta
+Entitas.meta

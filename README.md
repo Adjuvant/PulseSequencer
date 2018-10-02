@@ -10,10 +10,15 @@ Just clone or fork this repo and import it into your project.
 
 To get started, check out the example scenes.
 
+## Dependency
+
+Import paid version of [Entitas from Unity Asset Store](https://assetstore.unity.com/packages/templates/systems/entitas-87638). 
+Free version *may* work.
+
 ## Todo
 
 - [ ] Add [Native Volume Envelopes](https://github.com/derelictcomputer/UnityVolumeEnvelopeNative)
-- [ ] Transition to Entitas
+- [x] Transition to Entitas
 - [ ] Add spatial positioning - set all voices in one action?
 - [ ] Add per step time offset
 - [ ] Add per step pitch variation
