@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114505978037916128}
   - component: {fileID: 114477134381566834}
   m_Layer: 0
-  m_Name: Sampler
+  m_Name: XyloSampler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

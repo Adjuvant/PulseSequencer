@@ -11,19 +11,21 @@ public partial class AudioEntity {
     public Pattern pattern { get { return (Pattern)GetComponent(AudioComponentsLookup.Pattern); } }
     public bool hasPattern { get { return HasComponent(AudioComponentsLookup.Pattern); } }
 
-    public void AddPattern(System.Collections.Generic.List<AudioEntity> newSteps, FollowType newFollowType) {
+    public void AddPattern(System.Collections.Generic.List<AudioEntity> newSteps, FollowType newFollowType, AudioEntity newPulseSource) {
         var index = AudioComponentsLookup.Pattern;
         var component = CreateComponent<Pattern>(index);
         component.steps = newSteps;
         component.followType = newFollowType;
+        component.pulseSource = newPulseSource;
         AddComponent(index, component);
     }
 
-    public void ReplacePattern(System.Collections.Generic.List<AudioEntity> newSteps, FollowType newFollowType) {
+    public void ReplacePattern(System.Collections.Generic.List<AudioEntity> newSteps, FollowType newFollowType, AudioEntity newPulseSource) {
         var index = AudioComponentsLookup.Pattern;
         var component = CreateComponent<Pattern>(index);
         component.steps = newSteps;
         component.followType = newFollowType;
+        component.pulseSource = newPulseSource;
         ReplaceComponent(index, component);
     }
 

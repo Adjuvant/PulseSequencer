@@ -21,9 +21,13 @@ public class TickComponent : IComponent
 #endregion 
 
 #region Pulses
-[Audio]
+/// <summary>
+/// Pulse component. Used only on pulse entities.
+/// </summary>
+[Audio,Event(EventTarget.Any)]
 public class PulseComponent : IComponent
 {
+    public double thisPulseTime;
     public double nextPulseTime;
     public double period;
     public uint pulsesPerBeat;
@@ -42,14 +46,8 @@ public class FollowersComponent : IComponent
     public List<AudioEntity> destinations;
 }
 
-[Audio, Event(EventTarget.Any)]
+[Audio, Event(EventTarget.Self)]
 public class PulseTriggerComponent : IComponent
-{
-    public double thisPulseTime;
-}
-
-[Audio, Event(EventTarget.Any)]
-public class PatternTriggerComponent : IComponent
 {
     public double thisPulseTime;
 }
@@ -79,6 +77,7 @@ public class Pattern : IComponent
 {    
     public List<AudioEntity> steps;
     public FollowType followType;
+    public AudioEntity pulseSource;
 }
 
 [Audio]
@@ -87,7 +86,7 @@ public class StepIndex : IComponent
     public int value;
 }
 
-[Audio, Event(EventTarget.Any)]
+[Audio, Event(EventTarget.Self)]
 public class StepTriggered : IComponent
 {
     public int stepIndex;

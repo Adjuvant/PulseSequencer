@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d45ec381516cd4702bd826261eae974d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _triggerName: CubePulse
+  _triggerName: Pulse
 --- !u!114 &114171558677449034
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -13,17 +13,17 @@ public class AudioSystems : Feature
         Add(new StartPlayingSystem(contexts));
         Add(new TickUpdateSystem(contexts));
 
-        Add(new GeneratePulsesSystem(contexts));
+        Add(new GeneratePulseAndPatterns(contexts));
+
         Add(new UpdatePulseSystem(contexts));
-        //Add(new UpdatePatternPulseSystem(contexts));
 
-        Add(new GeneratePatternSystem(contexts));
-
-        Add(new IteratePatternIndexSystem(contexts));
+        Add(new IteratePulseFollowers(contexts));
         Add(new IteratePatternFollowerIndexSystem(contexts));
 
         Add(new TriggerStepSystem(contexts));
         Add(new StepSystem(contexts));
+
+        Add(new UpdatePatternPulseSystem(contexts));
     }
 }
 #endregion
@@ -66,21 +66,28 @@ public class TickUpdateSystem : IInitializeSystem, IExecuteSystem
 
 #region Pulses
 
-public sealed class GeneratePulsesSystem : IInitializeSystem
+public sealed class GeneratePulseAndPatterns : IInitializeSystem
 {
     AudioService audioService = AudioService.singleton;
-    readonly AudioContext audioContext;
-    public GeneratePulsesSystem(Contexts contexts)
+
+    public GeneratePulseAndPatterns(Contexts contexts)
     {
-        audioContext = contexts.audio;
+        
     }
     public void Initialize()
     {
-        audioService.CreatePulse(120, 4, 0.1f);
+        var pulse = audioService.CreatePulse(120, 4, 0.1f);
         //audioService.CreatePulse(97, 3, 0.1f);
+
+        var e = audioService.CreatePattern(8, FollowType.Pulse, pulse);
+        audioService.CreatePattern(RandomService.game.Int(3, 9), e);
     }
 }
 
+/// <summary>
+/// Update pulse system.
+/// Iterates the pulse time on the pulse enitity, based on tick.
+/// </summary>
 public sealed class UpdatePulseSystem : ReactiveSystem<AudioEntity>
 {
     readonly AudioContext audioContext;
@@ -98,10 +105,9 @@ public sealed class UpdatePulseSystem : ReactiveSystem<AudioEntity>
             while (t.tick.currentTick + e.pulse.latency > e.pulse.nextPulseTime)
             {
                 var thisPulseTime = e.pulse.nextPulseTime;
-                var _nextPulseTime = thisPulseTime + e.pulse.period;
-                e.ReplacePulse(_nextPulseTime, e.pulse.period,
-                               e.pulse.pulsesPerBeat, e.pulse.latency);
-                e.ReplacePulseTrigger(thisPulseTime);
+                var nextPulseTime = thisPulseTime + e.pulse.period;
+                e.ReplacePulse(thisPulseTime, nextPulseTime, e.pulse.period,
+                               e.pulse.pulsesPerBeat, e.pulse.latency);                
             }
         }
     }
@@ -117,62 +123,17 @@ public sealed class UpdatePulseSystem : ReactiveSystem<AudioEntity>
     }
 }
 
-//public sealed class UpdatePatternPulseSystem : ReactiveSystem<AudioEntity>
-//{
-//    readonly AudioContext audioContext;
-//    //readonly IGroup<AudioEntity> group;
-
-//    public UpdatePatternPulseSystem(Contexts contexts) : base(contexts.audio)
-//    {
-//        audioContext = contexts.audio;
-//        //group = audioContext.GetGroup(AudioMatcher.PatternFollower);
-//    }
-
-//    protected override void Execute(List<AudioEntity> entities)
-//    {
-//        // TODO: really messy! double foreach should use some events.
-//        foreach(var source in entities)
-//        {
-//            foreach (var e in source.followers.destinations)
-//                e.ReplacePatternTrigger(source.stepTriggered.pulseTime);
-//        }
-//    }
-
-//    protected override bool Filter(AudioEntity entity)
-//    {
-//        return entity.hasPattern && entity.hasFollowers;
-//    }
-
-//    protected override ICollector<AudioEntity> GetTrigger(IContext<AudioEntity> context)
-//    {
-//        return context.CreateCollector(AudioMatcher.StepTriggered);
-//    }
-//}
 
 #endregion
 
 #region Patterns
-public sealed class GeneratePatternSystem : IInitializeSystem
-{
-    AudioService audioService = AudioService.singleton;
-    readonly AudioContext audioContext;
-    public GeneratePatternSystem(Contexts contexts)
-    {
-        audioContext = contexts.audio;
-    }
-    public void Initialize()
-    {
-        var e = audioService.CreatePattern(8, FollowType.Pulse);
-        audioService.CreatePattern(5, e);
-    }
-}
 
-public sealed class IteratePatternIndexSystem : ReactiveSystem<AudioEntity>
+public sealed class IteratePulseFollowers : ReactiveSystem<AudioEntity>
 {
     readonly AudioContext audioContext;
     readonly IGroup<AudioEntity> patterns;
 
-    public IteratePatternIndexSystem(Contexts contexts) : base(contexts.audio)
+    public IteratePulseFollowers(Contexts contexts) : base(contexts.audio)
     {
         audioContext = contexts.audio;
         patterns = audioContext.GetGroup(AudioMatcher.Pattern);
@@ -181,16 +142,20 @@ public sealed class IteratePatternIndexSystem : ReactiveSystem<AudioEntity>
     protected override void Execute(List<AudioEntity> entities)
     {
         // TODO: match pulse trigger to the pattern. Store ref? Or link event?
-        var pulse = entities.SingleEntity();
-        foreach (var p in patterns.GetEntities().Where(
-                     p => p.pattern.followType==FollowType.Pulse))
-        {
-            var stepCount = p.pattern.steps.Count;
-            if (stepCount == 0) break;
+        foreach (var pulseEntity in entities){
+            foreach (var p in patterns.GetEntities().Where(
+                         p => p.pattern.followType==FollowType.Pulse))
+            {
+                if (p.hasPatternFollower) continue;
+                if (pulseEntity != p.pattern.pulseSource) continue;
 
-            var newStep = (p.stepIndex.value + 1) % stepCount;
-            p.ReplaceStepIndex(newStep);
-            p.ReplacePulseTrigger(pulse.pulseTrigger.thisPulseTime);
+                var stepCount = p.pattern.steps.Count;
+                if (stepCount == 0) continue;
+
+                var newStep = (p.stepIndex.value + 1) % stepCount;
+                p.ReplaceStepIndex(newStep);
+                p.ReplacePulseTrigger(pulseEntity.pulse.thisPulseTime);
+            }
         }
     }
 
@@ -201,7 +166,7 @@ public sealed class IteratePatternIndexSystem : ReactiveSystem<AudioEntity>
 
     protected override ICollector<AudioEntity> GetTrigger(IContext<AudioEntity> context)
     {
-        return context.CreateCollector(AudioMatcher.PulseTrigger);
+        return context.CreateCollector(AudioMatcher.Pulse);
     }
 }
 
@@ -226,20 +191,17 @@ public sealed class TriggerStepSystem : ReactiveSystem<AudioEntity>
             
             if (p.pattern.steps[p.stepIndex.value].step.active)
             {
-                var pulseTime = p.hasPulseTrigger ? p.pulseTrigger.thisPulseTime :
-                                 p.patternTrigger.thisPulseTime;
+                var pulseTime = p.pulseTrigger.thisPulseTime;
                 //Debug.Log("Active step: " + p.stepIndex.value);
                 p.ReplaceStepTriggered(p.stepIndex.value,
                                        pulseTime);
             }
-
         }
     }
 
     protected override bool Filter(AudioEntity entity)
     {
-        return entity.hasPattern && entity.pattern.steps.Count > 0 &&
-                     (entity.hasPulseTrigger || entity.hasPatternTrigger);
+        return entity.hasPattern && entity.pattern.steps.Count > 0;
     }
 
     protected override ICollector<AudioEntity> GetTrigger(IContext<AudioEntity> context)
@@ -254,11 +216,11 @@ public sealed class TriggerStepSystem : ReactiveSystem<AudioEntity>
 /// </summary>
 public sealed class StepSystem : ReactiveSystem<AudioEntity>
 {
-    readonly AudioContext audioContext;
+    //readonly AudioContext audioContext;
 
     public StepSystem(Contexts contexts) : base(contexts.audio)
     {
-        audioContext = contexts.audio;
+        //audioContext = contexts.audio;
     }
 
     protected override void Execute(List<AudioEntity> entities)
@@ -272,7 +234,7 @@ public sealed class StepSystem : ReactiveSystem<AudioEntity>
     protected override bool Filter(AudioEntity entity)
     {
         return entity.hasPattern && entity.pattern.steps.Count > 0 &&
-                     (entity.hasPulseTrigger || entity.hasPatternTrigger) && entity.hasAttachedView;
+                     entity.hasPulseTrigger && entity.hasAttachedView;
     }
 
     protected override ICollector<AudioEntity> GetTrigger(IContext<AudioEntity> context)
@@ -281,14 +243,49 @@ public sealed class StepSystem : ReactiveSystem<AudioEntity>
     }
 }
 
+
+public sealed class UpdatePatternPulseSystem : ReactiveSystem<AudioEntity>
+{
+    //readonly AudioContext audioContext;
+    //readonly IGroup<AudioEntity> group;
+
+    public UpdatePatternPulseSystem(Contexts contexts) : base(contexts.audio)
+    {
+        //audioContext = contexts.audio;
+        //group = audioContext.GetGroup(AudioMatcher.PatternFollower);
+    }
+
+    protected override void Execute(List<AudioEntity> entities)
+    {
+        // TODO: really messy! double foreach should use some events.
+        foreach (var source in entities)
+        {
+            foreach (var e in source.followers.destinations)
+                e.ReplacePulseTrigger(source.stepTriggered.pulseTime);
+        }
+    }
+
+    protected override bool Filter(AudioEntity entity)
+    {
+        return entity.hasPattern && entity.hasFollowers;
+    }
+
+    protected override ICollector<AudioEntity> GetTrigger(IContext<AudioEntity> context)
+    {
+        return context.CreateCollector(AudioMatcher.StepTriggered);
+    }
+}
+#endregion
+
+#region Pattern Followers
 public sealed class IteratePatternFollowerIndexSystem : ReactiveSystem<AudioEntity>
 {
-    readonly AudioContext audioContext;
+    //readonly AudioContext audioContext;
     //readonly IGroup<AudioEntity> patterns;
 
     public IteratePatternFollowerIndexSystem(Contexts contexts) : base(contexts.audio)
     {
-        audioContext = contexts.audio;
+        //audioContext = contexts.audio;
         //patterns = audioContext.GetGroup(AudioMatcher.Pattern);
     }
 
@@ -299,7 +296,7 @@ public sealed class IteratePatternFollowerIndexSystem : ReactiveSystem<AudioEnti
         foreach (var p in entities)
         {
             var stepCount = p.pattern.steps.Count;
-            if (stepCount == 0) break;
+            if (stepCount == 0) continue;
 
             var newStep = (p.stepIndex.value + 1) % stepCount;
             p.ReplaceStepIndex(newStep);
@@ -315,7 +312,7 @@ public sealed class IteratePatternFollowerIndexSystem : ReactiveSystem<AudioEnti
 
     protected override ICollector<AudioEntity> GetTrigger(IContext<AudioEntity> context)
     {
-        return context.CreateCollector(AudioMatcher.PatternTrigger);
+        return context.CreateCollector(AudioMatcher.PulseTrigger);
     }
 }
 

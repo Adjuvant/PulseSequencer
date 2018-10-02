@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class AudioService
 {
@@ -21,18 +22,20 @@ public class AudioService
         _contexts = contexts;
     }
 
-    internal void CreatePulse(double bpm, uint measures, double latency)
+    internal AudioEntity CreatePulse(double bpm, uint measures, double latency)
     {
         var e = _contexts.audio.CreateEntity();
         var p = GetPeriod(bpm, measures);
-        e.AddPulse(_contexts.audio.tick.currentTick, p, 4, 0.1);
+        e.AddPulse(_contexts.audio.tick.currentTick,
+                   _contexts.audio.tick.currentTick+p, 
+                   p, 4, 0.1);
         e.AddPosition(new IntVector2(0, 0));
         e.isInteractive = true;
         e.AddAsset(Res.PulseFollower);
-
+        return e;
     }
 
-    internal AudioEntity CreatePattern(int size, FollowType type)
+    internal AudioEntity CreatePattern(int size, FollowType type, AudioEntity pulseSource)
     {
         var e = _contexts.audio.CreateEntity();
         List<AudioEntity> steps = new List<AudioEntity>();
@@ -41,17 +44,18 @@ public class AudioService
             s.AddStep(false);
             steps.Add(s);
         }
-        e.AddPattern(steps, type);
+        e.AddPattern(steps, type, pulseSource);
         e.AddStepIndex(0);
-        e.AddPosition(new IntVector2(0, 0));
+        e.AddPosition(new IntVector2(0, type == FollowType.Pulse ? 0 : -3));
         e.isInteractive = true;
-        e.AddAsset(Res.Sampler);
+        e.AddAsset(type == FollowType.Pulse ? Res.KickSampler : Res.XyloSampler);
+        e.AddPulseTrigger(AudioSettings.dspTime);
         entityService.CreateButtonLayout(type == FollowType.Pulse ? 0:-3,size,e);
         return e;
     }
 
     internal void CreatePattern(int size, AudioEntity source){
-        var e = CreatePattern(size, FollowType.Pattern);
+        var e = CreatePattern(size, FollowType.Pattern, source);
         e.AddPatternFollower(source);
         var l = new List<AudioEntity>();
         l.Add(e);

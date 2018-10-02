@@ -18,22 +18,21 @@ public static class AudioComponentsLookup {
     public const int Interactive = 7;
     public const int Pattern = 8;
     public const int PatternFollower = 9;
-    public const int PatternTrigger = 10;
-    public const int PatternTriggerListener = 11;
-    public const int Playing = 12;
-    public const int PlayingListener = 13;
-    public const int Position = 14;
-    public const int Pulse = 15;
-    public const int PulseTrigger = 16;
-    public const int PulseTriggerListener = 17;
-    public const int Step = 18;
-    public const int StepIndex = 19;
-    public const int StepTriggered = 20;
-    public const int StepTriggeredListener = 21;
-    public const int Tick = 22;
-    public const int TickListener = 23;
+    public const int Playing = 10;
+    public const int PlayingListener = 11;
+    public const int Position = 12;
+    public const int Pulse = 13;
+    public const int PulseListener = 14;
+    public const int PulseTrigger = 15;
+    public const int PulseTriggerListener = 16;
+    public const int Step = 17;
+    public const int StepIndex = 18;
+    public const int StepTriggered = 19;
+    public const int StepTriggeredListener = 20;
+    public const int Tick = 21;
+    public const int TickListener = 22;
 
-    public const int TotalComponents = 24;
+    public const int TotalComponents = 23;
 
     public static readonly string[] componentNames = {
         "Asset",
@@ -46,12 +45,11 @@ public static class AudioComponentsLookup {
         "Interactive",
         "Pattern",
         "PatternFollower",
-        "PatternTrigger",
-        "PatternTriggerListener",
         "Playing",
         "PlayingListener",
         "Position",
         "Pulse",
+        "PulseListener",
         "PulseTrigger",
         "PulseTriggerListener",
         "Step",
@@ -73,12 +71,11 @@ public static class AudioComponentsLookup {
         typeof(InteractiveComponent),
         typeof(Pattern),
         typeof(PatternFollowerComponent),
-        typeof(PatternTriggerComponent),
-        typeof(PatternTriggerListenerComponent),
         typeof(PlayingComponent),
         typeof(PlayingListenerComponent),
         typeof(PositionComponent),
         typeof(PulseComponent),
+        typeof(PulseListenerComponent),
         typeof(PulseTriggerComponent),
         typeof(PulseTriggerListenerComponent),
         typeof(StepComponent),

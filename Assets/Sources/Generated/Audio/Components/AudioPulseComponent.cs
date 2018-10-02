@@ -11,9 +11,10 @@ public partial class AudioEntity {
     public PulseComponent pulse { get { return (PulseComponent)GetComponent(AudioComponentsLookup.Pulse); } }
     public bool hasPulse { get { return HasComponent(AudioComponentsLookup.Pulse); } }
 
-    public void AddPulse(double newNextPulseTime, double newPeriod, uint newPulsesPerBeat, double newLatency) {
+    public void AddPulse(double newThisPulseTime, double newNextPulseTime, double newPeriod, uint newPulsesPerBeat, double newLatency) {
         var index = AudioComponentsLookup.Pulse;
         var component = CreateComponent<PulseComponent>(index);
+        component.thisPulseTime = newThisPulseTime;
         component.nextPulseTime = newNextPulseTime;
         component.period = newPeriod;
         component.pulsesPerBeat = newPulsesPerBeat;
@@ -21,9 +22,10 @@ public partial class AudioEntity {
         AddComponent(index, component);
     }
 
-    public void ReplacePulse(double newNextPulseTime, double newPeriod, uint newPulsesPerBeat, double newLatency) {
+    public void ReplacePulse(double newThisPulseTime, double newNextPulseTime, double newPeriod, uint newPulsesPerBeat, double newLatency) {
         var index = AudioComponentsLookup.Pulse;
         var component = CreateComponent<PulseComponent>(index);
+        component.thisPulseTime = newThisPulseTime;
         component.nextPulseTime = newNextPulseTime;
         component.period = newPeriod;
         component.pulsesPerBeat = newPulsesPerBeat;

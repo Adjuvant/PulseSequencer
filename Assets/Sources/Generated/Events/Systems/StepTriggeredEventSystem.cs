@@ -8,13 +8,9 @@
 //------------------------------------------------------------------------------
 public sealed class StepTriggeredEventSystem : Entitas.ReactiveSystem<AudioEntity> {
 
-    readonly Entitas.IGroup<AudioEntity> _listeners;
-    readonly System.Collections.Generic.List<AudioEntity> _entityBuffer;
     readonly System.Collections.Generic.List<IStepTriggeredListener> _listenerBuffer;
 
     public StepTriggeredEventSystem(Contexts contexts) : base(contexts.audio) {
-        _listeners = contexts.audio.GetGroup(AudioMatcher.StepTriggeredListener);
-        _entityBuffer = new System.Collections.Generic.List<AudioEntity>();
         _listenerBuffer = new System.Collections.Generic.List<IStepTriggeredListener>();
     }
 
@@ -25,18 +21,16 @@ public sealed class StepTriggeredEventSystem : Entitas.ReactiveSystem<AudioEntit
     }
 
     protected override bool Filter(AudioEntity entity) {
-        return entity.hasStepTriggered;
+        return entity.hasStepTriggered && entity.hasStepTriggeredListener;
     }
 
     protected override void Execute(System.Collections.Generic.List<AudioEntity> entities) {
         foreach (var e in entities) {
             var component = e.stepTriggered;
-            foreach (var listenerEntity in _listeners.GetEntities(_entityBuffer)) {
-                _listenerBuffer.Clear();
-                _listenerBuffer.AddRange(listenerEntity.stepTriggeredListener.value);
-                foreach (var listener in _listenerBuffer) {
-                    listener.OnStepTriggered(e, component.stepIndex, component.pulseTime);
-                }
+            _listenerBuffer.Clear();
+            _listenerBuffer.AddRange(e.stepTriggeredListener.value);
+            foreach (var listener in _listenerBuffer) {
+                listener.OnStepTriggered(e, component.stepIndex, component.pulseTime);
             }
         }
     }

@@ -6,36 +6,36 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-public sealed class PatternTriggerEventSystem : Entitas.ReactiveSystem<AudioEntity> {
+public sealed class PulseEventSystem : Entitas.ReactiveSystem<AudioEntity> {
 
     readonly Entitas.IGroup<AudioEntity> _listeners;
     readonly System.Collections.Generic.List<AudioEntity> _entityBuffer;
-    readonly System.Collections.Generic.List<IPatternTriggerListener> _listenerBuffer;
+    readonly System.Collections.Generic.List<IPulseListener> _listenerBuffer;
 
-    public PatternTriggerEventSystem(Contexts contexts) : base(contexts.audio) {
-        _listeners = contexts.audio.GetGroup(AudioMatcher.PatternTriggerListener);
+    public PulseEventSystem(Contexts contexts) : base(contexts.audio) {
+        _listeners = contexts.audio.GetGroup(AudioMatcher.PulseListener);
         _entityBuffer = new System.Collections.Generic.List<AudioEntity>();
-        _listenerBuffer = new System.Collections.Generic.List<IPatternTriggerListener>();
+        _listenerBuffer = new System.Collections.Generic.List<IPulseListener>();
     }
 
     protected override Entitas.ICollector<AudioEntity> GetTrigger(Entitas.IContext<AudioEntity> context) {
         return Entitas.CollectorContextExtension.CreateCollector(
-            context, Entitas.TriggerOnEventMatcherExtension.Added(AudioMatcher.PatternTrigger)
+            context, Entitas.TriggerOnEventMatcherExtension.Added(AudioMatcher.Pulse)
         );
     }
 
     protected override bool Filter(AudioEntity entity) {
-        return entity.hasPatternTrigger;
+        return entity.hasPulse;
     }
 
     protected override void Execute(System.Collections.Generic.List<AudioEntity> entities) {
         foreach (var e in entities) {
-            var component = e.patternTrigger;
+            var component = e.pulse;
             foreach (var listenerEntity in _listeners.GetEntities(_entityBuffer)) {
                 _listenerBuffer.Clear();
-                _listenerBuffer.AddRange(listenerEntity.patternTriggerListener.value);
+                _listenerBuffer.AddRange(listenerEntity.pulseListener.value);
                 foreach (var listener in _listenerBuffer) {
-                    listener.OnPatternTrigger(e, component.thisPulseTime);
+                    listener.OnPulse(e, component.thisPulseTime, component.nextPulseTime, component.period, component.pulsesPerBeat, component.latency);
                 }
             }
         }

@@ -11,20 +11,47 @@ public class GameSystems : Feature
     {
         // order is respected 
         //Add(new CreateTestObjectsSystem(contexts));
+        Add(new AssignButtonParents(contexts));
         Add(new UpdateButtonListeners(contexts));
         Add(new UpdatePatternBindings(contexts));
         Add(new UpdateStepPulse(contexts));
     }
 }
 
+public sealed class AssignButtonParents : ReactiveSystem<GameEntity>
+{
+
+    public AssignButtonParents(Contexts contexts):base(contexts.game)
+    {
+    }
+
+    protected override void Execute(List<GameEntity> entities)
+    {
+        foreach (var e in entities)
+        {
+            e.holder.items.ForEach((GameEntity obj) => obj.AddParent(e));
+        }
+    }
+
+    protected override bool Filter(GameEntity entity)
+    {
+        return entity.hasPatternBinding && entity.holder.items.Count>0;
+    }
+
+    protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
+    {
+        return context.CreateCollector(GameMatcher.Holder); 
+    }
+}
+
 public sealed class CreateTestObjectsSystem : IInitializeSystem
 {
     public EntityService entityService = EntityService.singleton;
-    readonly GameContext _context;
+    //readonly GameContext _context;
 
     public CreateTestObjectsSystem(Contexts contexts)
     {
-        _context = contexts.game;
+        //_context = contexts.game;
     }
 
     public void Initialize()
@@ -59,22 +86,17 @@ public sealed class UpdateButtonListeners : ReactiveSystem<GameEntity>
 
 public sealed class UpdatePatternBindings : ReactiveSystem<GameEntity>{
 
-    IGroup<GameEntity> group;
-
     public UpdatePatternBindings(Contexts contexts) : base(contexts.game)
     {
-        group = contexts.game.GetGroup(GameMatcher.PatternBinding);
     }
+
     protected override void Execute(List<GameEntity> entities)
     {
-        var bindings = group.GetEntities();
-
-
         foreach (var e in entities)
         {
             var state = e.button.state;
             bool active = (state == ButtonState.Off) ? false : true;
-            bindings[0].patternBinding.entity.pattern.steps[e.itemIndex.value].ReplaceStep(active);
+            e.parent.entity.patternBinding.entity.pattern.steps[e.itemIndex.value].ReplaceStep(active);
         }
     }
 
@@ -89,14 +111,17 @@ public sealed class UpdatePatternBindings : ReactiveSystem<GameEntity>{
     }
 }
 
+/// <summary>
+/// Update step pulse. Link from audio context to game.
+/// </summary>
 public sealed class UpdateStepPulse : ReactiveSystem<GameEntity>
 {
 
-    IGroup<GameEntity> group;
+    //IGroup<GameEntity> group;
 
     public UpdateStepPulse(Contexts contexts) : base(contexts.game)
     {
-        group = contexts.game.GetGroup(GameMatcher.PatternBinding);
+        //group = contexts.game.GetGroup(GameMatcher.PatternBinding);
     }
 
     protected override void Execute(List<GameEntity> entities)

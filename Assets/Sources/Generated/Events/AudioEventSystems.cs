@@ -11,9 +11,9 @@ public sealed class AudioEventSystems : Feature {
     public AudioEventSystems(Contexts contexts) {
         Add(new AudioAssetEventSystem(contexts)); // priority: 0
         Add(new AudioDestroyedEventSystem(contexts)); // priority: 0
-        Add(new PatternTriggerEventSystem(contexts)); // priority: 0
         Add(new PlayingEventSystem(contexts)); // priority: 0
         Add(new AudioPositionEventSystem(contexts)); // priority: 0
+        Add(new PulseEventSystem(contexts)); // priority: 0
         Add(new PulseTriggerEventSystem(contexts)); // priority: 0
         Add(new StepTriggeredEventSystem(contexts)); // priority: 0
         Add(new TickEventSystem(contexts)); // priority: 0

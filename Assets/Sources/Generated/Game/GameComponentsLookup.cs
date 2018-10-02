@@ -18,14 +18,15 @@ public static class GameComponentsLookup {
     public const int Holder = 7;
     public const int Interactive = 8;
     public const int ItemIndex = 9;
-    public const int PatternBinding = 10;
-    public const int PatternPulse = 11;
-    public const int Position = 12;
-    public const int StepAction = 13;
-    public const int StepActionListener = 14;
-    public const int Surface = 15;
+    public const int Parent = 10;
+    public const int PatternBinding = 11;
+    public const int PatternPulse = 12;
+    public const int Position = 13;
+    public const int StepAction = 14;
+    public const int StepActionListener = 15;
+    public const int Surface = 16;
 
-    public const int TotalComponents = 16;
+    public const int TotalComponents = 17;
 
     public static readonly string[] componentNames = {
         "Asset",
@@ -38,6 +39,7 @@ public static class GameComponentsLookup {
         "Holder",
         "Interactive",
         "ItemIndex",
+        "Parent",
         "PatternBinding",
         "PatternPulse",
         "Position",
@@ -57,6 +59,7 @@ public static class GameComponentsLookup {
         typeof(HolderComponent),
         typeof(InteractiveComponent),
         typeof(ItemIndexComponent),
+        typeof(ParentComponent),
         typeof(PatternBindingComponent),
         typeof(PatternPulseComponent),
         typeof(PositionComponent),

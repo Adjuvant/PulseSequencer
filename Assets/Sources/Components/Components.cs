@@ -29,6 +29,11 @@ public sealed class InputComponent : IComponent
     public int y;
 }
 
+[Input]
+public sealed class MouseUpComponent : IComponent{
+    public GameEntity origin;
+}
+
 [Game, Audio]
 public sealed class InteractiveComponent : IComponent
 {
@@ -43,8 +48,6 @@ public sealed class DestroyedComponent : IComponent
 [Game, Audio, Event(EventTarget.Self)]
 public sealed class PositionComponent : IComponent
 {
-
-    [EntityIndex]
     public IntVector2 value;
 }
 
@@ -81,6 +84,11 @@ public sealed class HolderComponent : IComponent
 {
     public List<GameEntity> items; // children
     public HolderArrangement arrangement;
+}
+
+[Game]
+public sealed class ParentComponent : IComponent{
+    public GameEntity entity;
 }
 
 [Game]

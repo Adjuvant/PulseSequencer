@@ -25,7 +25,7 @@ public sealed class ProcessInputSystem : IExecuteSystem, ICleanupSystem
     public ProcessInputSystem(Contexts contexts)
     {
         _contexts = contexts;
-        _inputs = _contexts.input.GetGroup(InputMatcher.Input);
+        _inputs = _contexts.input.GetGroup(InputMatcher.MouseUp);
     }
 
     // this runs early every frame (defined by its order in GameController.cs)
@@ -33,13 +33,12 @@ public sealed class ProcessInputSystem : IExecuteSystem, ICleanupSystem
     {
         foreach (var e in _inputs.GetEntities())
         {
-            foreach (var ge in _contexts.game.GetEntitiesWithPosition(
-                new IntVector2(e.input.x, e.input.y)).Where(ge => ge.isInteractive))
+            
+            if(e.mouseUp.origin.isInteractive)
             {
-
-                if (ge.hasButton)
-                    ge.ReplaceButton(
-                        ge.button.state == ButtonState.Off ?
+                if (e.mouseUp.origin.hasButton)
+                    e.mouseUp.origin.ReplaceButton(
+                        e.mouseUp.origin.button.state == ButtonState.Off ?
                         ButtonState.On : ButtonState.Off
                     );
             }
