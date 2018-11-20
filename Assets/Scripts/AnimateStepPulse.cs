@@ -27,5 +27,10 @@ namespace ButtonBehaviours
         {
             _animator = GetComponent<Animator>();
         }
+
+        void OnEnable()
+        {
+            _animator = GetComponent<Animator>();
+        }
     }
 }

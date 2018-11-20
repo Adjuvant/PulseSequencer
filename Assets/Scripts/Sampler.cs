@@ -77,9 +77,9 @@ public class Sampler : PatternFollower
 
             if (currentSample.Envelope.Enabled)
             {
-                envelopeFilter.AttackTime = currentSample.Envelope.AttackTime;
-                envelopeFilter.SustainTime = currentSample.Envelope.SustainTime;
-                envelopeFilter.ReleaseTime = currentSample.Envelope.ReleaseTime;
+                envelopeFilter._attackDuration = currentSample.Envelope.AttackTime;
+                envelopeFilter._sustainDuration = currentSample.Envelope.SustainTime;
+                envelopeFilter._releaseDuration = currentSample.Envelope.ReleaseTime;
                 envelopeFilter.Trigger(pulseTime);
             }
         }
@@ -89,6 +89,4 @@ public class Sampler : PatternFollower
         currentAudioSource.timeSamples = currentSample.Offset;
         currentAudioSource.PlayScheduled(pulseTime);
     }
-
-
 }

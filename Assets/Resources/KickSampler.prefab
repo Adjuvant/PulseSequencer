@@ -54,16 +54,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Samples:
   - Envelope:
-      Enabled: 0
+      Enabled: 1
       Reverse: 0
       Offset: 0
-      AttackTime: 0
-      SustainTime: 0
-      ReleaseTime: 0
+      AttackTime: 0.05
+      SustainTime: 0.3
+      ReleaseTime: 0.1
     _clip: {fileID: 8300000, guid: 328886b4cbbd04b9a9fe138c6e99df76, type: 3}
     _pitchInSemitones: 0
   _audioSourcePrefab: {fileID: 8277626, guid: 4647a8b8e965e6547bd5519348460160, type: 2}
-  _voices: 2
+  _voices: 6
 --- !u!114 &114505978037916128
 MonoBehaviour:
   m_ObjectHideFlags: 1
