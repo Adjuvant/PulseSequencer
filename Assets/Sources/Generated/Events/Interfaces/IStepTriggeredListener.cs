@@ -7,5 +7,5 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 public interface IStepTriggeredListener {
-    void OnStepTriggered(AudioEntity entity, int stepIndex, double pulseTime);
+    void OnStepTriggered(AudioEntity entity, int stepIndex, double pulseTime, AudioEntity step);
 }

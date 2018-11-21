@@ -8,13 +8,9 @@
 //------------------------------------------------------------------------------
 public sealed class PulseTriggerEventSystem : Entitas.ReactiveSystem<AudioEntity> {
 
-    readonly Entitas.IGroup<AudioEntity> _listeners;
-    readonly System.Collections.Generic.List<AudioEntity> _entityBuffer;
     readonly System.Collections.Generic.List<IPulseTriggerListener> _listenerBuffer;
 
     public PulseTriggerEventSystem(Contexts contexts) : base(contexts.audio) {
-        _listeners = contexts.audio.GetGroup(AudioMatcher.PulseTriggerListener);
-        _entityBuffer = new System.Collections.Generic.List<AudioEntity>();
         _listenerBuffer = new System.Collections.Generic.List<IPulseTriggerListener>();
     }
 
@@ -25,18 +21,16 @@ public sealed class PulseTriggerEventSystem : Entitas.ReactiveSystem<AudioEntity
     }
 
     protected override bool Filter(AudioEntity entity) {
-        return entity.hasPulseTrigger;
+        return entity.hasPulseTrigger && entity.hasPulseTriggerListener;
     }
 
     protected override void Execute(System.Collections.Generic.List<AudioEntity> entities) {
         foreach (var e in entities) {
             var component = e.pulseTrigger;
-            foreach (var listenerEntity in _listeners.GetEntities(_entityBuffer)) {
-                _listenerBuffer.Clear();
-                _listenerBuffer.AddRange(listenerEntity.pulseTriggerListener.value);
-                foreach (var listener in _listenerBuffer) {
-                    listener.OnPulseTrigger(e, component.thisPulseTime);
-                }
+            _listenerBuffer.Clear();
+            _listenerBuffer.AddRange(e.pulseTriggerListener.value);
+            foreach (var listener in _listenerBuffer) {
+                listener.OnPulseTrigger(e, component.thisPulseTime);
             }
         }
     }

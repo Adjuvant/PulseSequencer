@@ -11,19 +11,21 @@ public partial class AudioEntity {
     public StepTriggered stepTriggered { get { return (StepTriggered)GetComponent(AudioComponentsLookup.StepTriggered); } }
     public bool hasStepTriggered { get { return HasComponent(AudioComponentsLookup.StepTriggered); } }
 
-    public void AddStepTriggered(int newStepIndex, double newPulseTime) {
+    public void AddStepTriggered(int newStepIndex, double newPulseTime, AudioEntity newStep) {
         var index = AudioComponentsLookup.StepTriggered;
         var component = CreateComponent<StepTriggered>(index);
         component.stepIndex = newStepIndex;
         component.pulseTime = newPulseTime;
+        component.step = newStep;
         AddComponent(index, component);
     }
 
-    public void ReplaceStepTriggered(int newStepIndex, double newPulseTime) {
+    public void ReplaceStepTriggered(int newStepIndex, double newPulseTime, AudioEntity newStep) {
         var index = AudioComponentsLookup.StepTriggered;
         var component = CreateComponent<StepTriggered>(index);
         component.stepIndex = newStepIndex;
         component.pulseTime = newPulseTime;
+        component.step = newStep;
         ReplaceComponent(index, component);
     }
 

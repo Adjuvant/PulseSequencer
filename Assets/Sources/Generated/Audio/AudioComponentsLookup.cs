@@ -16,23 +16,28 @@ public static class AudioComponentsLookup {
     public const int Destroyed = 5;
     public const int Followers = 6;
     public const int Interactive = 7;
-    public const int Pattern = 8;
-    public const int PatternFollower = 9;
-    public const int Playing = 10;
-    public const int PlayingListener = 11;
-    public const int Position = 12;
-    public const int Pulse = 13;
-    public const int PulseListener = 14;
-    public const int PulseTrigger = 15;
-    public const int PulseTriggerListener = 16;
-    public const int Step = 17;
-    public const int StepIndex = 18;
-    public const int StepTriggered = 19;
-    public const int StepTriggeredListener = 20;
-    public const int Tick = 21;
-    public const int TickListener = 22;
+    public const int Meter = 8;
+    public const int Offset = 9;
+    public const int Pattern = 10;
+    public const int PatternFollower = 11;
+    public const int Pitch = 12;
+    public const int Playing = 13;
+    public const int PlayingListener = 14;
+    public const int Position = 15;
+    public const int Pulse = 16;
+    public const int PulseListener = 17;
+    public const int PulseTrigger = 18;
+    public const int PulseTriggerListener = 19;
+    public const int Step = 20;
+    public const int StepIndex = 21;
+    public const int StepTriggered = 22;
+    public const int StepTriggeredListener = 23;
+    public const int Tempo = 24;
+    public const int Tick = 25;
+    public const int TickListener = 26;
+    public const int Volume = 27;
 
-    public const int TotalComponents = 23;
+    public const int TotalComponents = 28;
 
     public static readonly string[] componentNames = {
         "Asset",
@@ -43,8 +48,11 @@ public static class AudioComponentsLookup {
         "Destroyed",
         "Followers",
         "Interactive",
+        "Meter",
+        "Offset",
         "Pattern",
         "PatternFollower",
+        "Pitch",
         "Playing",
         "PlayingListener",
         "Position",
@@ -56,8 +64,10 @@ public static class AudioComponentsLookup {
         "StepIndex",
         "StepTriggered",
         "StepTriggeredListener",
+        "Tempo",
         "Tick",
-        "TickListener"
+        "TickListener",
+        "Volume"
     };
 
     public static readonly System.Type[] componentTypes = {
@@ -69,8 +79,11 @@ public static class AudioComponentsLookup {
         typeof(DestroyedComponent),
         typeof(FollowersComponent),
         typeof(InteractiveComponent),
+        typeof(MeterComponent),
+        typeof(OffsetComponent),
         typeof(Pattern),
         typeof(PatternFollowerComponent),
+        typeof(PitchComponent),
         typeof(PlayingComponent),
         typeof(PlayingListenerComponent),
         typeof(PositionComponent),
@@ -82,7 +95,9 @@ public static class AudioComponentsLookup {
         typeof(StepIndex),
         typeof(StepTriggered),
         typeof(StepTriggeredListenerComponent),
+        typeof(TempoComponent),
         typeof(TickComponent),
-        typeof(TickListenerComponent)
+        typeof(TickListenerComponent),
+        typeof(VolumeComponent)
     };
 }

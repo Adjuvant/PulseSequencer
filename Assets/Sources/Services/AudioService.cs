@@ -22,9 +22,11 @@ public class AudioService
         _contexts = contexts;
     }
 
-    internal AudioEntity CreatePulse(double bpm, uint measures, double latency)
+    internal AudioEntity CreatePulse(float bpm, uint measures, double latency)
     {
         var e = _contexts.audio.CreateEntity();
+        e.AddTempo(bpm);
+        e.AddMeter(measures);
         var p = GetPeriod(bpm, measures);
         e.AddPulse(_contexts.audio.tick.currentTick,
                    _contexts.audio.tick.currentTick+p, 
@@ -42,6 +44,9 @@ public class AudioService
         for (int i = 0; i < size; i++){
             var s = _contexts.audio.CreateEntity();
             s.AddStep(false);
+            s.AddVolume(1f);
+            s.AddPitch(0);
+            s.AddOffset(0);
             steps.Add(s);
         }
         e.AddPattern(steps, type, pulseSource);
@@ -62,7 +67,7 @@ public class AudioService
         source.AddFollowers(l);
     }
 
-    double GetPeriod(double bpm, uint pulsesPerBeat)
+    public double GetPeriod(double bpm, uint pulsesPerBeat)
     {
         if (bpm < BpmMinimum)
         {

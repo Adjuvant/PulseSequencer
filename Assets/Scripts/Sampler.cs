@@ -12,7 +12,7 @@ public class Sampler : PatternFollower
     /// <summary>
     /// The collection of samples
     /// </summary>
-    public List<DerelictComputer.Sample> Samples = new List<DerelictComputer.Sample>();
+    public List<Sample> Samples = new List<Sample>();
 
 
     /// <summary>
@@ -50,7 +50,7 @@ public class Sampler : PatternFollower
         e.AddStepTriggeredListener(this);
     }
 
-    public override void OnStepTriggered(AudioEntity entity, int stepIndex, double pulseTime)
+    public override void OnStepTriggered(AudioEntity entity, int stepIndex, double pulseTime, AudioEntity step)
     {
         if (Samples.Count == 0)
         {
@@ -60,6 +60,16 @@ public class Sampler : PatternFollower
         var currentSample = Samples[_currentSampleIndex];
         _currentSampleIndex = (_currentSampleIndex + 1) % Samples.Count;
 
+        var volume = step.hasVolume ? step.volume.value : 1f;
+        var pitch = step.hasPitch ? step.pitch.value : 0f;
+        var pulsePeriod = entity.pattern.pulseSource.hasPulse ?
+                            entity.pattern.pulseSource.pulse.period : // Tempo pattern
+                            entity.pattern.pulseSource.pattern.pulseSource.pulse.period; // Pattern follower
+        var offset = step.hasOffset ? step.offset.value * pulsePeriod : 0f;
+
+        currentSample.Envelope.Volume = volume;
+        currentSample.Pitch = pitch;
+        currentSample.Envelope.Offset = offset;
         // if suspended, keep counting sample indices in order to keep in phase
         //if (Suspended)
         //{
@@ -69,7 +79,7 @@ public class Sampler : PatternFollower
         var currentAudioSource = _audioSources[_currentAudioSourceIndex];
         _currentAudioSourceIndex = (_currentAudioSourceIndex + 1) % _audioSources.Count;
 
-        var envelopeFilter = currentAudioSource.GetComponent<DerelictComputer.VolumeEnvelopeFilter>();
+        var envelopeFilter = currentAudioSource.GetComponent<VolumeEnvelopeFilter>();
 
         if (envelopeFilter != null)
         {
@@ -83,10 +93,10 @@ public class Sampler : PatternFollower
                 envelopeFilter.Trigger(pulseTime);
             }
         }
-
+        currentAudioSource.volume = currentSample.Volume;
         currentAudioSource.clip = currentSample.Clip;
         currentAudioSource.pitch = currentSample.Pitch;
-        currentAudioSource.timeSamples = currentSample.Offset;
-        currentAudioSource.PlayScheduled(pulseTime);
+        //currentAudioSource.timeSamples = currentSample.Offset;
+        currentAudioSource.PlayScheduled(pulseTime + offset);
     }
 }

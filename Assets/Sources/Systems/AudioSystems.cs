@@ -191,10 +191,16 @@ public sealed class TriggerStepSystem : ReactiveSystem<AudioEntity>
             
             if (p.pattern.steps[p.stepIndex.value].step.active)
             {
+                var step = p.pattern.steps[p.stepIndex.value];
+
                 var pulseTime = p.pulseTrigger.thisPulseTime;
                 //Debug.Log("Active step: " + p.stepIndex.value);
+                // Todo add volume pitch and offset data
+                // *p.pulse.period
                 p.ReplaceStepTriggered(p.stepIndex.value,
-                                       pulseTime);
+                                       pulseTime,
+                                       step
+                                      );
             }
         }
     }

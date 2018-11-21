@@ -24,7 +24,7 @@ public class TickComponent : IComponent
 /// <summary>
 /// Pulse component. Used only on pulse entities.
 /// </summary>
-[Audio,Event(EventTarget.Any)]
+[Audio, Event(EventTarget.Any)]
 public class PulseComponent : IComponent
 {
     public double thisPulseTime;
@@ -51,6 +51,18 @@ public class PulseTriggerComponent : IComponent
 {
     public double thisPulseTime;
 }
+
+[Audio]
+public class TempoComponent : IComponent
+{
+    public float bpm;
+}
+
+[Audio]
+public class MeterComponent : IComponent
+{
+    public uint measures;
+}
 #endregion
 
 #region Patterns
@@ -74,7 +86,7 @@ public class StepComponent : IComponent
 
 [Audio]
 public class Pattern : IComponent
-{    
+{
     public List<AudioEntity> steps;
     public FollowType followType;
     public AudioEntity pulseSource;
@@ -91,5 +103,31 @@ public class StepTriggered : IComponent
 {
     public int stepIndex;
     public double pulseTime;
+    public AudioEntity step;
+}
+
+// Methods for volume per step,
+// + Send volume in the step trigger event
+// + Put volume on the sampler in an array
+// First preferable at present
+#endregion
+
+#region Values
+[Audio]
+public class VolumeComponent : IComponent
+{
+    public float value;
+}
+
+[Audio]
+public class PitchComponent : IComponent
+{
+    public float value;
+}
+
+[Audio]
+public class OffsetComponent : IComponent
+{
+    public double value;
 }
 #endregion

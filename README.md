@@ -1,6 +1,6 @@
 # PulseSequencer
 
-A pulse-based sequencer for Unity3d adapted from [Derelict Computer](http://derelict.computer) original work.
+A pulse-based sequencer for Unity3d adapted from [Derelict Computer's](http://derelict.computer) original work.
 
 ## Info
 
@@ -17,13 +17,28 @@ Free version *may* work.
 
 ## Todo
 
-- [ ] Add [Native Volume Envelopes](https://github.com/derelictcomputer/UnityVolumeEnvelopeNative)
+- [x] Add [Native Volume Envelopes](https://github.com/derelictcomputer/UnityVolumeEnvelopeNative)
 - [x] Transition to Entitas
 - [ ] Add spatial positioning - set all voices in one action?
-- [ ] Add per step time offset
-- [ ] Add per step pitch variation
-- [ ] Add per step gain setting
+- [x] Add per step time offset
+- [x] Add per step pitch variation
+- [x] Add per step gain setting
 - [ ] Create a automated creation routine to instantiate from Prefab or Command.
+- [ ] Better placement of new content
+- [ ] Add controls for pitch, time, gain etc.
+- [ ] Add sample offset back in, change time offset to "Swing"
+- [ ] Add multiple pulse capability.
+
+## Architecture notes
+
++ Pass the triggered steps as audioEntities then volume, offset and pitch are extracted when required.
++ Still using voices to improve efficiency
++ Use AbstractListenerBehaviour to register normal game objects to entities.
++ Use Entitas events to throw stuff around, requires classes using component interfaces.
++ 
+
+# Issues
++ Native envelopes won't trigger at high speeds, dependant on num of voices though.
 
 ## Platform Support
 - Windows: verified working

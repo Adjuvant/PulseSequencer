@@ -30,7 +30,7 @@ public sealed class StepTriggeredEventSystem : Entitas.ReactiveSystem<AudioEntit
             _listenerBuffer.Clear();
             _listenerBuffer.AddRange(e.stepTriggeredListener.value);
             foreach (var listener in _listenerBuffer) {
-                listener.OnStepTriggered(e, component.stepIndex, component.pulseTime);
+                listener.OnStepTriggered(e, component.stepIndex, component.pulseTime, component.step);
             }
         }
     }
